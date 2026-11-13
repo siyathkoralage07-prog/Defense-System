@@ -9,14 +9,28 @@ package defensesystem;
  * @author user
  */
 public class MainController extends javax.swing.JFrame {
-
+    private DefenseObserver[] observers = new DefenseObserver[0];
     /**
      * Creates new form Submarine
      */
     public MainController() {
         initComponents();
     }
-
+    
+    public void addDefenseObserver(DefenseObserver observer){
+        DefenseObserver[] temp = new DefenseObserver[observers.length + 1];
+        for(int i = 0; i < observers.length; i++){
+            temp[i] = observers[i];
+        }
+        temp[temp.length - 1] = observer;
+        observers = temp;
+    }
+    
+    public void receiveUnitMessage(String message){
+        String oldMessages = txtUnitMessages.getText();
+        txtUnitMessages.setText(oldMessages + message + "\n");
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -52,11 +66,21 @@ public class MainController extends javax.swing.JFrame {
         comboSelectDefence.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Defence", "Helicopter", "Tank", "Submarine" }));
 
         btnCollectInfomation.setText("Collect Information");
+        btnCollectInfomation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCollectInfomationActionPerformed(evt);
+            }
+        });
 
         sliderPosition.setMajorTickSpacing(20);
         sliderPosition.setPaintLabels(true);
         sliderPosition.setPaintTicks(true);
         sliderPosition.setValue(0);
+        sliderPosition.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderPositionStateChanged(evt);
+            }
+        });
 
         jLabel1.setText("Soldier Count");
 
@@ -82,6 +106,7 @@ public class MainController extends javax.swing.JFrame {
         txtSendMessage.setRows(5);
         jScrollPane2.setViewportView(txtSendMessage);
 
+        txtSystemLog.setEditable(false);
         txtSystemLog.setColumns(20);
         txtSystemLog.setRows(5);
         jScrollPane3.setViewportView(txtSystemLog);
@@ -95,6 +120,11 @@ public class MainController extends javax.swing.JFrame {
             }
         });
 
+        txtSoldierCount.setEditable(false);
+
+        txtFuelAmount.setEditable(false);
+
+        txtAmmoAmount.setEditable(false);
         txtAmmoAmount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtAmmoAmountActionPerformed(evt);
@@ -108,22 +138,6 @@ public class MainController extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(sliderPosition, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(60, 60, 60)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(83, 83, 83)
-                                .addComponent(btnSend))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(60, 60, 60)
-                                .addComponent(chkSendPrivate, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -148,19 +162,34 @@ public class MainController extends javax.swing.JFrame {
                                 .addGap(97, 97, 97)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(checkAreaClear))
-                        .addContainerGap(42, Short.MAX_VALUE))))
+                            .addComponent(checkAreaClear)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sliderPosition, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(60, 60, 60)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkSendPrivate, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                .addGap(42, 42, 42))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboSelectDefence, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCollectInfomation)
+                    .addComponent(checkAreaClear))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(comboSelectDefence, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnCollectInfomation)
-                            .addComponent(checkAreaClear))
                         .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -174,40 +203,94 @@ public class MainController extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(txtAmmoAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)))
-                .addGap(8, 8, 8)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(chkSendPrivate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(2, 2, 2)
                         .addComponent(btnSend)
-                        .addGap(30, 30, 30)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 6, Short.MAX_VALUE)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(sliderPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void checkAreaClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkAreaClearActionPerformed
-        // TODO add your handling code here:
+        boolean isCleared = checkAreaClear.isSelected();
+    for(int i = 0; i < observers.length; i++) {
+        observers[i].updateAreaClear(isCleared);
+    }
+
+    String oldLog = txtSystemLog.getText();
+    if(isCleared){
+        txtSystemLog.setText(oldLog + "Area Status: Cleared\n");
+    }else{
+        txtSystemLog.setText(oldLog + "Area Status: Not Cleared\n");
+    }
+
     }//GEN-LAST:event_checkAreaClearActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
-        // TODO add your handling code here:
+        String message = txtSendMessage.getText();
+    if(message.equals("")){
+        return;
+    }
+
+    if(chkSendPrivate.isSelected()){
+        String selectedUnit = comboSelectDefence.getSelectedItem().toString();
+        for(int i = 0; i < observers.length; i++){
+            if(observers[i].getUnitName().equals(selectedUnit)){
+                observers[i].receiveMessage("MainController (Private) : " + message);
+                String oldLog = txtSystemLog.getText();
+                txtSystemLog.setText(oldLog + "Private to " + selectedUnit + " : " + message + "\n");
+                break;
+            }
+        }
+    }else{
+        for(int i = 0; i < observers.length; i++){
+            observers[i].receiveMessage("MainController : " + message);
+        }
+        String oldLog = txtSystemLog.getText();
+        txtSystemLog.setText(oldLog + "Broadcast : " + message + "\n");
+    }
+
+        txtSendMessage.setText("");
     }//GEN-LAST:event_btnSendActionPerformed
 
     private void txtAmmoAmountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAmmoAmountActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtAmmoAmountActionPerformed
+
+    private void btnCollectInfomationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCollectInfomationActionPerformed
+        String selectedUnit = comboSelectDefence.getSelectedItem().toString();
+
+        for(int i = 0; i < observers.length; i++){
+            if(observers[i].getUnitName().equals(selectedUnit)){
+                txtSoldierCount.setText(String.valueOf(observers[i].getSoldierCount()));
+                txtFuelAmount.setText(String.valueOf(observers[i].getFuelOrEnergyAmount()));
+                txtAmmoAmount.setText(String.valueOf(observers[i].getAmmoCount()));
+                break;
+            }
+        }
+    }//GEN-LAST:event_btnCollectInfomationActionPerformed
+
+    private void sliderPositionStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderPositionStateChanged
+        int strengthValue = sliderPosition.getValue();
+        for(int i = 0; i < observers.length; i++) {
+            observers[i].updatePosition(strengthValue);
+        }
+    }//GEN-LAST:event_sliderPositionStateChanged
 
     /**
      * @param args the command line arguments

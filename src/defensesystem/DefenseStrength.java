@@ -9,5 +9,5 @@ package defensesystem;
  * @author user
  */
 public enum DefenseStrength {
-    
+    LOW, MEDIUM, HIGH, STRONG, CLOSED
 }
