@@ -16,19 +16,19 @@ public class Tank extends SuperDefence {
         initComponents();
     }
     
-    private void updateWeaponButtons(){
-        boolean isInPosition = checkPosition.isSelected();
+   private void updateWeaponButtons(){
+        boolean isInPosition = checkPosition6.isSelected();
 
         if(isInPosition && currentStrength >= 20){
-            btnShoot.setEnabled(true);
+            btnShoot6.setEnabled(true);
         }else{
-            btnShoot.setEnabled(false);
+            btnShoot6.setEnabled(false);
         }
 
         if(isInPosition && currentStrength >= 40){
-            btnMissile.setEnabled(true);
+            btnMissile7.setEnabled(true);
         }else{
-            btnMissile.setEnabled(false);
+            btnMissile7.setEnabled(false);
         }
 
         if(isInPosition && currentStrength >= 60){
@@ -46,7 +46,7 @@ public class Tank extends SuperDefence {
 
     @Override
     public void updateAreaClear(boolean isCleared){
-        setAreaLabel(lblAreaStatus, isCleared);
+        setAreaLabel(lblAreaStatus6, isCleared);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Tank extends SuperDefence {
 
     @Override
     public void receiveMessage(String message){
-        showIncomingMessage(txtMessageBox, message);
+        showIncomingMessage(txtMessageBox6, message);
     }
 
     @Override
@@ -67,12 +67,12 @@ public class Tank extends SuperDefence {
 
     @Override
     public int getSoldierCount(){
-        return (int) spinnerSoldierCount.getValue();
+        return (int) spinnerSoldierCount6.getValue();
     }
 
     @Override
     public int getAmmoCount(){
-        return (int) spinnerAmmoCount.getValue();
+        return (int) spinnerAmmoCount6.getValue();
     }
 
     @Override
@@ -80,9 +80,6 @@ public class Tank extends SuperDefence {
         return jSlider7.getValue();
     }
 
-    private void checkPositionActionPerformed(){
-        updateWeaponButtons();
-    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -846,6 +843,11 @@ public class Tank extends SuperDefence {
         setTitle("Tank");
 
         checkPosition6.setText("Position");
+        checkPosition6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkPosition6ActionPerformed(evt);
+            }
+        });
 
         jSlider7.setMajorTickSpacing(20);
         jSlider7.setMinorTickSpacing(10);
@@ -991,12 +993,17 @@ public class Tank extends SuperDefence {
     }//GEN-LAST:event_btnSend5ActionPerformed
 
     private void btnSend6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSend6ActionPerformed
-        // TODO add your handling code here:
+        sendToMainController(getUnitName(), txtMessageInput6.getText());
+        txtMessageInput6.setText("");
     }//GEN-LAST:event_btnSend6ActionPerformed
 
     private void btnMissile7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMissile7ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnMissile7ActionPerformed
+
+    private void checkPosition6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkPosition6ActionPerformed
+        updateWeaponButtons();
+    }//GEN-LAST:event_checkPosition6ActionPerformed
 
     /**
      * @param args the command line arguments
